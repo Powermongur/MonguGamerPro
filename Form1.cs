@@ -14,7 +14,6 @@ namespace MonguGamerPro
 {
     public partial class Form1 : Form
     {
-
         public const byte VK_NUMLOCK = 0x90;
         public const byte VK_CAPSLOCK = 0x14;
         public const byte VK_SCROLL = 0x91;
@@ -36,6 +35,9 @@ namespace MonguGamerPro
         static extern void keybd_event(byte bVk, byte bScan, uint dwFlags, UIntPtr dwExtraInfo);
         const int KEYEVENTF_EXTENDEDKEY = 0x1;
         const int KEYEVENTF_KEYUP = 0x2;
+        const int KEYEVENTF_KEYDOWN = 0x0;
+
+        public int delay = 0;
 
         public Form1()
         {
@@ -44,59 +46,176 @@ namespace MonguGamerPro
 
         private void Form1_Load(object sender, EventArgs e)
         {
+            numLockLabelUpdate(Control.IsKeyLocked(Keys.NumLock));
+            capsLockLabelUpdate(Control.IsKeyLocked(Keys.CapsLock));
+            scrollLockLabelUpdate(Control.IsKeyLocked(Keys.Scroll));
         }
 
         private void numLockButton_Click(object sender, EventArgs e)
         {
-            if (Control.IsKeyLocked(Keys.NumLock))
+            bool isKeyLocked = Control.IsKeyLocked(Keys.NumLock);
+
+            if (isKeyLocked)
             {
                 keybd_event(VK_NUMLOCK, 0x45, KEYEVENTF_EXTENDEDKEY, (UIntPtr)0);
                 keybd_event(VK_NUMLOCK, 0x45, KEYEVENTF_EXTENDEDKEY | KEYEVENTF_KEYUP, (UIntPtr)0);
-
-                numLockLabel.Text = "OFF";
-                numLockLabel.BackColor = Color.Red;
             }
             else
             {
-                numLockLabel.Text = "ON";
-                numLockLabel.BackColor = Color.Green;
+                keybd_event(VK_NUMLOCK, 0x45, KEYEVENTF_EXTENDEDKEY, (UIntPtr)0);
+                keybd_event(VK_NUMLOCK, 0x45, KEYEVENTF_EXTENDEDKEY | KEYEVENTF_KEYDOWN, (UIntPtr)0);
             }
+
+            numLockLabelUpdate(!isKeyLocked);
         }
 
         private void capsLockButton_Click(object sender, EventArgs e)
         {
-            if (Control.IsKeyLocked(Keys.CapsLock))
+            bool isKeyLocked = Control.IsKeyLocked(Keys.CapsLock);
+
+            if (isKeyLocked)
             {
                 keybd_event(VK_CAPSLOCK, 0x45, KEYEVENTF_EXTENDEDKEY, (UIntPtr)0);
                 keybd_event(VK_CAPSLOCK, 0x45, KEYEVENTF_EXTENDEDKEY | KEYEVENTF_KEYUP, (UIntPtr)0);
-
-                capsLockLabel.Text = "OFF";
-                capsLockLabel.BackColor = Color.Red;
             }
             else
             {
-                keybd_event(VK_CAPSLOCK, 0x45, 0, (UIntPtr)0);
-
-                capsLockLabel.Text = "ON";
-                capsLockLabel.BackColor = Color.Green;
+                keybd_event(VK_CAPSLOCK, 0x45, KEYEVENTF_EXTENDEDKEY, (UIntPtr)0);
+                keybd_event(VK_CAPSLOCK, 0x45, KEYEVENTF_EXTENDEDKEY | KEYEVENTF_KEYDOWN, (UIntPtr)0);
             }
+
+            capsLockLabelUpdate(!isKeyLocked);
         }
 
         private void scrolLockButton_Click(object sender, EventArgs e)
         {
-            if (Control.IsKeyLocked(Keys.Scroll))
+            bool isKeyLocked = Control.IsKeyLocked(Keys.Scroll);
+
+            if (isKeyLocked)
             {
                 keybd_event(VK_SCROLL, 0x45, KEYEVENTF_EXTENDEDKEY, (UIntPtr)0);
                 keybd_event(VK_SCROLL, 0x45, KEYEVENTF_EXTENDEDKEY | KEYEVENTF_KEYUP, (UIntPtr)0);
-
-                scrollLockLabel.Text = "OFF";
-                scrollLockLabel.BackColor = Color.Red;
             }
             else
+            {
+                keybd_event(VK_SCROLL, 0x45, KEYEVENTF_EXTENDEDKEY, (UIntPtr)0);
+                keybd_event(VK_SCROLL, 0x45, KEYEVENTF_EXTENDEDKEY | KEYEVENTF_KEYDOWN, (UIntPtr)0);
+            }
+
+            scrollLockLabelUpdate(!isKeyLocked);
+        }
+
+        private void numLockLabelUpdate(bool isKeyLocked)
+        {
+            if (isKeyLocked)
+            {
+                numLockLabel.Text = "ON";
+                numLockLabel.BackColor = Color.Green;
+            }
+            else
+            {
+                numLockLabel.Text = "OFF";
+                numLockLabel.BackColor = Color.Red;
+            }
+        }
+
+        private void capsLockLabelUpdate(bool isKeyLocked)
+        {
+            if (isKeyLocked)
+            {
+                capsLockLabel.Text = "ON";
+                capsLockLabel.BackColor = Color.Green;
+            }
+            else
+            {
+                capsLockLabel.Text = "OFF";
+                capsLockLabel.BackColor = Color.Red;
+            }
+        }
+
+        private void scrollLockLabelUpdate(bool isKeyLocked)
+        {
+            if (isKeyLocked)
             {
                 scrollLockLabel.Text = "ON";
                 scrollLockLabel.BackColor = Color.Green;
             }
+            else
+            {
+                scrollLockLabel.Text = "OFF";
+                scrollLockLabel.BackColor = Color.Red;
+            }
+        }
+
+        private void showClockButton_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void showCrosshairButton_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void fKeyButton_Click(object sender, EventArgs e)
+        {
+            Text = ((Button)sender).Text;
+
+            if ((Button)sender == f14Button)
+                Text = "Yes";
+
+            delayTextBox.Enabled = false;
+            f13Button.Enabled = false;
+            f14Button.Enabled = false;
+            f15Button.Enabled = false;
+            f16Button.Enabled = false;
+            f17Button.Enabled = false;
+            f18Button.Enabled = false;
+            f19Button.Enabled = false;
+            f20Button.Enabled = false;
+            f21Button.Enabled = false;
+            f22Button.Enabled = false;
+            f23Button.Enabled = false;
+            f24Button.Enabled = false;
+
+            delay = Convert.ToInt32(delayTextBox.Text);
+            fKeyTimer.Start();
+        }
+
+        private void fKeyTimer_Tick(object sender, EventArgs e)
+        {
+            int countdown = Convert.ToInt32(delayTextBox.Text);
+
+            if(countdown <= 1)
+            {
+                delayTextBox.Enabled = true;
+                f13Button.Enabled = true;
+                f14Button.Enabled = true;
+                f15Button.Enabled = true;
+                f16Button.Enabled = true;
+                f17Button.Enabled = true;
+                f18Button.Enabled = true;
+                f19Button.Enabled = true;
+                f20Button.Enabled = true;
+                f21Button.Enabled = true;
+                f22Button.Enabled = true;
+                f23Button.Enabled = true;
+                f24Button.Enabled = true;
+
+                delayTextBox.Text = delay.ToString();
+                fKeyTimer.Stop();
+            }
+            else
+            {
+                delayTextBox.Text = Convert.ToString(countdown - 1);
+            }            
+        }
+
+        private void stopDelayButton_Click(object sender, EventArgs e)
+        {
+            delayTextBox.Text = "0";
+
+            fKeyTimer_Tick(sender, e);
         }
     }
 }
