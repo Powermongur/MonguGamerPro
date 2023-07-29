@@ -247,11 +247,13 @@
             // delayTextBox
             // 
             this.delayTextBox.Location = new System.Drawing.Point(86, 62);
+            this.delayTextBox.MaxLength = 3;
             this.delayTextBox.Name = "delayTextBox";
             this.delayTextBox.Size = new System.Drawing.Size(34, 20);
             this.delayTextBox.TabIndex = 7;
             this.delayTextBox.Text = "0";
             this.delayTextBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.delayTextBox.Validating += new System.ComponentModel.CancelEventHandler(this.delayTextBox_Validating);
             // 
             // delayLabel
             // 

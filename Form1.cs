@@ -217,5 +217,28 @@ namespace MonguGamerPro
 
             fKeyTimer_Tick(sender, e);
         }
+
+        private string makeNumber(string text)
+        {
+            string outputText = "";
+
+            for (int i = 0; i < text.Length; i++)
+            {
+                if("0123456789".Contains(text[i]))
+                    outputText += text[i];
+            }
+
+            outputText = outputText.TrimStart('0');
+
+            if (outputText == "")
+                outputText = "0";
+
+            return outputText;
+        }
+
+        private void delayTextBox_Validating(object sender, CancelEventArgs e)
+        {
+            delayTextBox.Text = makeNumber(delayTextBox.Text);
+        }
     }
 }
